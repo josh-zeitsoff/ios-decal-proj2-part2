@@ -51,6 +51,7 @@ class PostsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         (Hint): This should be pretty simple.
     */
     override func viewWillAppear(_ animated: Bool) {
+        updateData()
         // YOUR CODE HERE
     }
 
@@ -164,7 +165,7 @@ class PostsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         if let post = getPostFromIndexPath(indexPath: indexPath), !post.read {
             presentPostImage(forPost: post)
             post.read = true
-            
+            currentUser.addNewReadPost(postID: post.postId)
             // YOUR CODE HERE
             
             tableView.reloadRows(at: [indexPath], with: .automatic)

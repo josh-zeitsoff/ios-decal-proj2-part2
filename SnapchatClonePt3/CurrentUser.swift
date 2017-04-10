@@ -34,7 +34,7 @@ class CurrentUser {
     func getReadPostIDs(completion: @escaping ([String]) -> Void) {
         var postArray: [String] = []
         dbRef.observeSingleEvent(of: .value, with: { (snapshot) in
-            if snapshot != nil {
+            if snapshot.exists() {
                 let postDict = snapshot.value as? [String : AnyObject] ?? [:]
                 for key in postDict.keys {
                     postArray.append(postDict[key] as! String)

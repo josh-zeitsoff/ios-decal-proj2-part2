@@ -119,7 +119,7 @@ func getPosts(user: CurrentUser, completion: @escaping ([Post]?) -> Void) {
     var postArray: [Post] = []
     dbRef.observeSingleEvent(of: .value, with: {
         (snapshot) in 
-        if let snapshot = snapshot {
+        if snapshot.exists() {
             if let postDict = snapshot.value as? [String : AnyObject] ?? [:] {
             //make query
             completion(postArray)
