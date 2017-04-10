@@ -68,12 +68,33 @@ class PostsTableViewController: UIViewController, UITableViewDelegate, UITableVi
             - Using the postImagePath property of the post, retrieve the image data from the storage module (there is a function in ImageFeed.swift that does this for you already).
             - Create a UIImage from the data and add a new element to the 'loadedImagesById' variable using the image and post ID. 
         - After iterating through all the posts, reload the tableview.
-     
+     d
     */
     func updateData() {
         // YOUR CODE HERE
+        getPosts(user: currentUser, completion: { postsArray in
+            if let postsArray = postsArray {
+            clearThreads()
+            for post in postsArray {
+            addPostToThread(post: post)
+                getDataFromPath(path: post.postImagePath, completion: {
+                (data) in
+                    if let data = data {
+                        let image = UIImage(data: data)
+                        self.loadedImagesById[post.postId] = image
+                    }
+                })
+            self.postTableView.reloadData()
+            }
+        }
+    })
     }
     
+            
+        
+        
+        
+        
     // MARK: Custom methods (relating to UI)
     
     func hidePostImage(sender: UIButton) {

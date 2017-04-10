@@ -71,6 +71,9 @@ func addPost(postImage: UIImage, thread: String, username: String) {
         "thread" : thread as! AnyObject,
         "username" : username as! AnyObject
     ]
+    
+    dbRef.child(firPostsNode).childByAutoId().setValue(dict)
+    store(data: data, toPath: path)
     // YOUR CODE HERE
 }
 
@@ -84,7 +87,12 @@ func addPost(postImage: UIImage, thread: String, username: String) {
 */
 func store(data: Data, toPath path: String) {
     let storageRef = FIRStorage.storage().reference()
-    
+    storageRef.put(data, metadata: nil) {
+    (metadata, error) in
+        if let error = error {
+        print(error)
+        }
+    }
     // YOUR CODE HERE
 }
 
@@ -109,6 +117,23 @@ func store(data: Data, toPath path: String) {
 func getPosts(user: CurrentUser, completion: @escaping ([Post]?) -> Void) {
     let dbRef = FIRDatabase.database().reference()
     var postArray: [Post] = []
+    dbRef.observeSingleEvent(of: .value, with: {
+        (snapshot) in 
+        if let snapshot = snapshot {
+            if let postDict = snapshot.value as? [String : AnyObject] ?? [:] {
+            //make query
+            completion(postArray)
+            }
+            else {
+            completion(nil)
+            }
+        }
+        else {
+        completion(nil)
+        }
+    
+    
+    })
     
     // YOUR CODE HERE
 }
