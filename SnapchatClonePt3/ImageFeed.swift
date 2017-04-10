@@ -60,6 +60,17 @@ func addPost(postImage: UIImage, thread: String, username: String) {
     let data = UIImageJPEGRepresentation(postImage, 1.0)! 
     let path = "\(firStorageImagesPath)/\(UUID().uuidString)"
     
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = dateFormat
+    let date = dateFormatter.string(from: Date())
+    
+    let dict: [String:AnyObject] = [
+        "date": date as! AnyObject,
+        "imagePath" : path as! AnyObject,
+        "thread" : thread as! AnyObject,
+        "username" : username as! AnyObject
+    ]
     // YOUR CODE HERE
 }
 

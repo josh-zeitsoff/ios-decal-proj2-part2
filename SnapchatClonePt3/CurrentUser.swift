@@ -44,6 +44,7 @@ class CurrentUser {
         Remember to be very careful about following the structure of the User node before writing any data!
     */
     func addNewReadPost(postID: String) {
+        dbRef.child(firReadPostsNode).childByAutoId().setValue(postID)
         // TODO
     }
     

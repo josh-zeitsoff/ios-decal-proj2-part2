@@ -38,7 +38,35 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
         guard let email = emailField.text else { return }
         guard let password = passwordField.text else { return }
         guard let name = nameField.text else { return }
-        
+        FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user, error) in
+            if let error = error {
+                //Display error with UIAlertController
+                print(error)
+                let alertController = UIAlertController(title: "Error Signing Up", message: "Sign up failed, try again", preferredStyle: .alert)
+                let OKAction = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction) in
+                    print("You've pressed OK button");
+                }
+                alertController.addAction(OKAction)
+                self.present(alertController, animated: true, completion:nil)
+
+            } else {
+                let changeRequest = user!.profileChangeRequest()
+                changeRequest.displayName = name
+                changeRequest.commitChanges(completion: {
+                (err) in
+                    if let err = err {
+                        print(err)
+                    }
+                    else {
+                        self.performSegue(withIdentifier: "signupToMain", sender: self)
+                        //do signup stuff
+                        //do segue to main screen using signupToMain
+                    }
+                })
+                //do sign up stuff
+            }
+            
+        })
         // YOUR CODE HERE
     }
 

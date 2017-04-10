@@ -29,6 +29,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         super.didReceiveMemoryWarning()
     }
     
+    
+
+    
+    
     /*
         TODO:
         
@@ -41,7 +45,22 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBAction func didAttemptLogin(_ sender: UIButton) {
         guard let emailText = emailField.text else { return }
         guard let passwordText = passwordField.text else { return }
-        
+        FIRAuth.auth()?.signIn(withEmail: emailText, password: passwordText, completion: { (user, error) in
+        if let error = error {
+            print(error)
+            let alertController = UIAlertController(title: "Error Logging In", message: "Login failed, try again", preferredStyle: .alert)
+            let OKAction = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction) in
+                print("You've pressed OK button");
+            }
+            alertController.addAction(OKAction)
+            self.present(alertController, animated: true, completion:nil)
+            //display error message using UI Alert Controller
+        } else {
+            self.performSegue(withIdentifier: "loginToMain", sender: self)
+            //do sign in stuff
+        }
+            
+        })
         // YOUR CODE HERE
     }
     
