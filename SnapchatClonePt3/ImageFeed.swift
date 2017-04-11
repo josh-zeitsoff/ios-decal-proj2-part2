@@ -121,12 +121,12 @@ func getPosts(user: CurrentUser, completion: @escaping ([Post]?) -> Void) {
         (snapshot) in
         if snapshot.exists() {
             if let postDict = snapshot.value as? [String : AnyObject] {
-                //user.getReadPostIDs(completion: { (usersPost) in
+                user.getReadPostIDs(completion: { (usersPost) in
                     for key in postDict.keys {
                         var seen = false
-                        //if usersPost.contains(key) {
-                        //    seen = true
-                        //}
+                        if usersPost.contains(key) {
+                            seen = true
+                        }
                         let username = postDict[key]?["username"] as! String
                         let imPath = postDict[key]?["imagePath"] as! String
                         let thread = postDict[key]?["thread"] as! String
@@ -134,9 +134,11 @@ func getPosts(user: CurrentUser, completion: @escaping ([Post]?) -> Void) {
                         let post = Post(id: key, username: username, postImagePath: imPath, thread: thread, dateString: date, read: seen)
                         postArray.append(post)
                     }
-                }
+                    completion(postArray)
+                })
+            }
             //make query
-            completion(postArray)
+            
             }
             else {
             completion(nil)
