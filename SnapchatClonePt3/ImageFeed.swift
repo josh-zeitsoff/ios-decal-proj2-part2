@@ -66,10 +66,10 @@ func addPost(postImage: UIImage, thread: String, username: String) {
     let date = dateFormatter.string(from: Date())
     
     let dict: [String:AnyObject] = [
-        "date": date as! AnyObject,
-        "imagePath" : path as! AnyObject,
-        "thread" : thread as! AnyObject,
-        "username" : username as! AnyObject
+        "date": date as AnyObject,
+        "imagePath" : path as AnyObject,
+        "thread" : thread as AnyObject,
+        "username" : username as AnyObject
     ]
     
     dbRef.child(firPostsNode).childByAutoId().setValue(dict)
@@ -121,30 +121,29 @@ func getPosts(user: CurrentUser, completion: @escaping ([Post]?) -> Void) {
         (snapshot) in
         if snapshot.exists() {
             if let postDict = snapshot.value as? [String : AnyObject] {
-                user.getReadPostIDs(completion: { readPostsArray in
+                //user.getReadPostIDs(completion: { (usersPost) in
                     for key in postDict.keys {
                         var seen = false
-                        for readPost in readPostsArray {
-                            if key == readPost {
-                                seen = true
-                            }
-                        }
+                        //if usersPost.contains(key) {
+                        //    seen = true
+                        //}
+                        let username = postDict[key]?["username"] as! String
                         let imPath = postDict[key]?["imagePath"] as! String
                         let thread = postDict[key]?["thread"] as! String
                         let date = postDict[key]?["date"] as! String
-                        let post = Post(id: key, username: user.username, postImagePath: imPath, thread: thread, dateString: date, read: seen)
+                        let post = Post(id: key, username: username, postImagePath: imPath, thread: thread, dateString: date, read: seen)
+                        postArray.append(post)
                     }
-                })
+                }
             //make query
             completion(postArray)
             }
             else {
             completion(nil)
             }
-        }
-        else {
-        completion(nil)
-        }
+        //else {
+        //completion(nil)
+        //}
     })
     
     // YOUR CODE HERE

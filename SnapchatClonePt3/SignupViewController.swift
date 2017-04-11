@@ -44,11 +44,10 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
                 print(error)
                 let alertController = UIAlertController(title: "Error Signing Up", message: "Sign up failed, try again", preferredStyle: .alert)
                 let OKAction = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction) in
-                    print("You've pressed OK button");
+                    print("You've pressed OK button")
                 }
                 alertController.addAction(OKAction)
                 self.present(alertController, animated: true, completion:nil)
-
             } else {
                 let changeRequest = user!.profileChangeRequest()
                 changeRequest.displayName = name

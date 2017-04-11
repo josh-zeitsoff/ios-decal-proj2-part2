@@ -85,8 +85,8 @@ class PostsTableViewController: UIViewController, UITableViewDelegate, UITableVi
                         self.loadedImagesById[post.postId] = image
                     }
                 })
-            self.postTableView.reloadData()
             }
+            self.postTableView.reloadData()
         }
     })
     }
@@ -165,6 +165,7 @@ class PostsTableViewController: UIViewController, UITableViewDelegate, UITableVi
         if let post = getPostFromIndexPath(indexPath: indexPath), !post.read {
             presentPostImage(forPost: post)
             post.read = true
+            
             currentUser.addNewReadPost(postID: post.postId)
             // YOUR CODE HERE
             
