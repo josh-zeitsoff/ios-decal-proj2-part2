@@ -87,7 +87,7 @@ func addPost(postImage: UIImage, thread: String, username: String) {
 */
 func store(data: Data, toPath path: String) {
     let storageRef = FIRStorage.storage().reference()
-    storageRef.put(data, metadata: nil) {
+    storageRef.child(path).put(data, metadata: nil) {
     (metadata, error) in
         if let error = error {
         print(error)
@@ -117,10 +117,24 @@ func store(data: Data, toPath path: String) {
 func getPosts(user: CurrentUser, completion: @escaping ([Post]?) -> Void) {
     let dbRef = FIRDatabase.database().reference()
     var postArray: [Post] = []
-    dbRef.observeSingleEvent(of: .value, with: {
-        (snapshot) in 
+    dbRef.child(firPostsNode).observeSingleEvent(of: .value, with: {
+        (snapshot) in
         if snapshot.exists() {
-            if let postDict = snapshot.value as? [String : AnyObject] ?? [:] {
+            if let postDict = snapshot.value as? [String : AnyObject] {
+                user.getReadPostIDs(completion: { readPostsArray in
+                    for key in postDict.keys {
+                        var seen = false
+                        for readPost in readPostsArray {
+                            if key == readPost {
+                                seen = true
+                            }
+                        }
+                        let imPath = postDict[key]?["imagePath"] as! String
+                        let thread = postDict[key]?["thread"] as! String
+                        let date = postDict[key]?["date"] as! String
+                        let post = Post(id: key, username: user.username, postImagePath: imPath, thread: thread, dateString: date, read: seen)
+                    }
+                })
             //make query
             completion(postArray)
             }
@@ -131,8 +145,6 @@ func getPosts(user: CurrentUser, completion: @escaping ([Post]?) -> Void) {
         else {
         completion(nil)
         }
-    
-    
     })
     
     // YOUR CODE HERE
